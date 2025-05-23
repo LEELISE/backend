@@ -21,8 +21,8 @@ import static com.likelion.backendplus4.yakplus.common.util.log.LogUtil.log;
 @Component("embeddingRouterAdapter")
 @Primary
 public class EmbeddingRouterAdapter implements EmbeddingPort, EmbeddingSwitchPort {
-    @Value("${embed.switcher.default-adapter}")
-    private String DEFAULT_ADAPTER;
+
+    private final String defaultAdapterName;
     private final Map<String, EmbeddingPort> adapters;
     private volatile EmbeddingPort embeddingPort;
     private volatile String adapterBeanName;
@@ -34,8 +34,9 @@ public class EmbeddingRouterAdapter implements EmbeddingPort, EmbeddingSwitchPor
      * @author 정안식
      * @since 2025-05-02
      */
-    public EmbeddingRouterAdapter(Map<String, EmbeddingPort> allAdapters) {
+    public EmbeddingRouterAdapter(Map<String, EmbeddingPort> allAdapters, @Value("${embed.switcher.default-adapter}") String defaultAdapterName) {
         this.adapters = allAdapters;
+        this.defaultAdapterName = defaultAdapterName;
         log("구현체 목록: " + adapters.keySet());
     }
 
@@ -47,8 +48,8 @@ public class EmbeddingRouterAdapter implements EmbeddingPort, EmbeddingSwitchPor
      */
     @PostConstruct
     public void init() {
-        log("EmbeddingRouterAdapter 초기화 - 어댑터명: " + DEFAULT_ADAPTER);
-        switchTo(DEFAULT_ADAPTER);
+        log("EmbeddingRouterAdapter 초기화 - 어댑터명: " + defaultAdapterName);
+        switchTo(defaultAdapterName);
     }
 
     /**
